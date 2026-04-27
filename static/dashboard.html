@@ -4,605 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZeroTrace - Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'zt-dark': '#0a0f0d',
-                        'zt-green': '#10b981',
-                        'zt-green-dark': '#059669',
-                        'zt-green-light': '#34d399',
-                        'zt-accent': '#f59e0b',
-                        'zt-accent-red': '#ef4444',
-                        'zt-glass': 'rgba(255, 255, 255, 0.05)',
-                        'zt-glass-border': 'rgba(255, 255, 255, 0.1)',
-                    },
-                    fontFamily: {
-                        'sans': ['Inter', 'system-ui', 'sans-serif'],
-                    },
-                    animation: {
-                        'fade-in': 'fadeIn 0.5s ease-out',
-                        'slide-up': 'slideUp 0.5s ease-out',
-                        'pulse-slow': 'pulse 3s infinite',
-                    },
-                    keyframes: {
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
-                        },
-                        slideUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
-                        },
-                    },
-                },
-            },
-        }
-    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        
+        :root {
+            --dark-green: #2D6A4F;
+            --medium-green: #40916C;
+            --light-green: #95D5B2;
+            --very-light-green: #D8F3DC;
+            --cream: #e5d7c4;
+            --dark-cream: #F0E6D2;
+            --text-dark: #1B4332;
+            --text-light: #FFF8E8;
+            --accent: #74C69D;
+            --accent-warm: #F4A261;
+            --accent-hot: #E76F51;
+            --card:#FFFFFF;
+            --shadow-soft: 0 4px 20px rgba(45, 106, 79, 0.12);
+            --shadow-hover: 0 12px 32px rgba(45, 106, 79, 0.2);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background: linear-gradient(135deg, #0a0f0d 0%, #0f2922 50%, #0a0f0d 100%);
-            min-height: 100vh;
-            color: white;
+            background-color: var(--cream);
+            color: var(--text-dark);
+            line-height: 1.6;
         }
-        
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+
+        .container {
+            max-width: auto;
+            margin: 0 auto;
+            padding: 0 20px;
         }
-        
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
+
+        header {
+            background-color: rgba(45, 106, 79, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
         }
-        
-        ::-webkit-scrollbar-thumb {
-            background: rgba(16, 185, 129, 0.3);
-            border-radius: 10px;
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(16, 185, 129, 0.5);
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            font-weight: 700;
         }
-        
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
+
+        .leaf-icon { font-size: 1.8rem; }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
         }
-        
-        .glass-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
             transition: all 0.3s ease;
+            padding: 0.5rem 0;
+            position: relative;
         }
-        
-        .glass-card:hover {
-            background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%);
-            border-color: rgba(16, 185, 129, 0.3);
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--light-green);
+            transition: width 0.3s ease;
         }
-        
-        .text-gradient {
-            background: linear-gradient(135deg, #10b981, #34d399);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .glow-green {
-            box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
-        }
-        
-        .glow-accent {
-            box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
-        }
-        
-        .progress-bar {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        
-        .progress-fill {
-            background: linear-gradient(90deg, #10b981, #34d399);
-            border-radius: 10px;
-            transition: width 1s ease-out;
-        }
-        
-        .progress-fill.danger {
-            background: linear-gradient(90deg, #ef4444, #f87171);
-        }
-        
-        .progress-fill.warning {
-            background: linear-gradient(90deg, #f59e0b, #fbbf24);
-        }
-        
-        .bg-pattern {
-            background-image: 
-                radial-gradient(circle at 20% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.05) 0%, transparent 30%);
-        }
-    </style>
-</head>
-<body class="bg-pattern min-h-screen">
-    <!-- Navbar -->
-    <nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <!-- Logo -->
-                <div class="flex items-center gap-2">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center">
-                        <i class="fas fa-leaf text-white text-lg"></i>
-                    </div>
-                    <span class="text-xl font-bold text-gradient">ZeroTrace</span>
-                </div>
-                
-                <!-- Links -->
-                <div class="hidden md:flex items-center gap-8">
-                    <a href="#" class="text-white/80 hover:text-emerald-400 transition-colors text-sm font-medium">Dashboard</a>
-                    <a href="#" class="text-white/50 hover:text-emerald-400 transition-colors text-sm font-medium">Insights</a>
-                    <a href="#" class="text-white/50 hover:text-emerald-400 transition-colors text-sm font-medium">Reports</a>
-                </div>
-                
-                <!-- Right side -->
-                <div class="flex items-center gap-4">
-                    <button class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 transition-all border border-white/10">
-                        <i class="fas fa-user text-white/70"></i>
-                        <span class="text-sm text-white/70">Sign In</span>
-                    </button>
-                    <button class="px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 transition-all font-medium text-sm shadow-lg shadow-emerald-500/25">
-                        Get Started
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Main Content -->
-    <main class="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <!-- Hero Section -->
-        <section class="mb-8 animate-slide-up">
-            <div class="glass-card p-8 md:p-10 relative overflow-hidden">
-                <!-- Decorative elements -->
-                <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                <div class="absolute bottom-0 left-0 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
-                
-                <div class="relative z-10">
-                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-                        <div>
-                            <p class="text-white/50 text-sm font-medium mb-2">TODAY'S EMISSIONS</p>
-                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2">
-                                You emitted <span class="text-gradient">81.18 kg</span> CO₂
-                            </h1>
-                            <div class="flex items-center gap-2 mt-3">
-                                <span class="flex items-center gap-1 px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-sm font-medium">
-                                    <i class="fas fa-arrow-up text-xs"></i>
-                                    +12%
-                                </span>
-                                <span class="text-white/50 text-sm">compared to yesterday</span>
-                            </div>
-                        </div>
-                        
-                        <div class="flex flex-col gap-4 min-w-[300px]">
-                            <div class="flex justify-between items-center">
-                                <span class="text-white/70 text-sm font-medium">Daily Goal</span>
-                                <span class="text-white text-sm font-semibold">60 kg / 81.18 kg</span>
-                            </div>
-                            <div class="progress-bar h-3">
-                                <div class="progress-fill danger h-full" style="width: 135%"></div>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <div class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
-                                <span class="text-red-400 text-sm">35% over target</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        .nav-links a:hover:after { width: 100%; }
 
-        <!-- AI Insight Card -->
-        <section class="mb-8 animate-slide-up" style="animation-delay: 0.1s;">
-            <div class="glass-card p-6 md:p-8 border-l-4 border-l-amber-500">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="flex items-start gap-4">
-                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-robot text-white text-xl"></i>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-2 mb-1">
-                                <h3 class="text-lg font-semibold text-white">AI Recommendation</h3>
-                                <span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-xs font-medium">NEW</span>
-                            </div>
-                            <p class="text-white/70 text-sm leading-relaxed max-w-xl">
-                                Electricity usage contributes <span class="text-white font-semibold">92%</span> of your emissions. 
-                                Reducing AC usage by 2 hours can cut <span class="text-emerald-400 font-semibold">18% CO₂</span>.
-                            </p>
-                        </div>
-                    </div>
-                    <button class="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 transition-all font-medium text-sm shadow-lg shadow-amber-500/25 whitespace-nowrap">
-                        <i class="fas fa-magic mr-2"></i>
-                        Apply Suggestion
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Quick Actions & Emissions Breakdown -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            <!-- Quick Actions -->
-            <section class="animate-slide-up" style="animation-delay: 0.2s;">
-                <div class="glass-card p-6 h-full">
-                    <h3 class="text-lg font-semibold text-white mb-5">Quick Actions</h3>
-                    <div class="flex flex-col gap-3">
-                        <button class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-emerald-500/30 transition-all group">
-                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <i class="fas fa-receipt text-white text-lg"></i>
-                            </div>
-                            <div class="text-left">
-                                <p class="text-white font-medium">Scan Bill</p>
-                                <p class="text-white/50 text-xs">Upload electricity bill</p>
-                            </div>
-                            <i class="fas fa-chevron-right text-white/30 ml-auto group-hover:text-emerald-400 transition-colors"></i>
-                        </button>
-                        
-                        <button class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-emerald-500/30 transition-all group">
-                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <i class="fas fa-car text-white text-lg"></i>
-                            </div>
-                            <div class="text-left">
-                                <p class="text-white font-medium">Log Transport</p>
-                                <p class="text-white/50 text-xs">Record your commute</p>
-                            </div>
-                            <i class="fas fa-chevron-right text-white/30 ml-auto group-hover:text-emerald-400 transition-colors"></i>
-                        </button>
-                        
-                        <button class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-emerald-500/30 transition-all group">
-                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <i class="fas fa-laptop text-white text-lg"></i>
-                            </div>
-                            <div class="text-left">
-                                <p class="text-white font-medium">Track Devices</p>
-                                <p class="text-white/50 text-xs">Monitor energy usage</p>
-                            </div>
-                            <i class="fas fa-chevron-right text-white/30 ml-auto group-hover:text-emerald-400 transition-colors"></i>
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Emissions Breakdown Donut -->
-            <section class="animate-slide-up" style="animation-delay: 0.3s;">
-                <div class="glass-card p-6 h-full">
-                    <h3 class="text-lg font-semibold text-white mb-5">Emissions Breakdown</h3>
-                    <div class="relative flex items-center justify-center">
-                        <div class="w-64 h-64">
-                            <canvas id="donutChart"></canvas>
-                        </div>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                            <span class="text-3xl font-bold text-white">81.2</span>
-                            <span class="text-white/50 text-sm">kg CO₂</span>
-                        </div>
-                    </div>
-                    <div class="mt-4 grid grid-cols-2 gap-3">
-                        <div class="flex items-center gap-2">
-                            <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
-                            <span class="text-white/70 text-xs">Electricity 75%</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <div class="w-3 h-3 rounded-full bg-blue-500"></div>
-                            <span class="text-white/70 text-xs">Transport 15%</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <div class="w-3 h-3 rounded-full bg-purple-500"></div>
-                            <span class="text-white/70 text-xs">Devices 8%</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <div class="w-3 h-3 rounded-full bg-amber-500"></div>
-                            <span class="text-white/70 text-xs">Food 2%</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Weekly Trend -->
-            <section class="animate-slide-up" style="animation-delay: 0.4s;">
-                <div class="glass-card p-6 h-full">
-                    <div class="flex items-center justify-between mb-5">
-                        <h3 class="text-lg font-semibold text-white">Weekly Trend</h3>
-                        <span class="text-emerald-400 text-sm font-medium">Last 7 days</span>
-                    </div>
-                    <div class="h-48">
-                        <canvas id="lineChart"></canvas>
-                    </div>
-                    <div class="flex justify-between mt-4 text-xs">
-                        <div class="text-center">
-                            <p class="text-white/50">Lowest</p>
-                            <p class="text-emerald-400 font-semibold">52 kg</p>
-                        </div>
-                        <div class="text-center">
-                            <p class="text-white/50">Average</p>
-                            <p class="text-white font-semibold">68 kg</p>
-                        </div>
-                        <div class="text-center">
-                            <p class="text-white/50">Highest</p>
-                            <p class="text-red-400 font-semibold">91 kg</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <!-- Gamification Section -->
-        <section class="mb-8 animate-slide-up" style="animation-delay: 0.5s;">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="glass-card p-5 flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-                        <i class="fas fa-leaf text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <p class="text-white/50 text-xs font-medium">SAVED THIS WEEK</p>
-                        <p class="text-2xl font-bold text-white">12 kg</p>
-                        <p class="text-emerald-400 text-xs">CO₂ reduced</p>
-                    </div>
-                </div>
-                
-                <div class="glass-card p-5 flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
-                        <i class="fas fa-fire text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <p class="text-white/50 text-xs font-medium">STREAK</p>
-                        <p class="text-2xl font-bold text-white">3 days</p>
-                        <p class="text-amber-400 text-xs">Keep it up!</p>
-                    </div>
-                </div>
-                
-                <div class="glass-card p-5 flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
-                        <i class="fas fa-trophy text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <p class="text-white/50 text-xs font-medium">ECO LEVEL</p>
-                        <p class="text-2xl font-bold text-white">Beginner</p>
-                        <div class="w-24 h-1.5 bg-white/10 rounded-full mt-1">
-                            <div class="w-1/4 h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Actionable Tips Feed -->
-        <section class="animate-slide-up" style="animation-delay: 0.6s;">
-            <div class="glass-card p-6 md:p-8">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-lg font-semibold text-white">Actionable Tips</h3>
-                    <button class="text-emerald-400 text-sm hover:text-emerald-300 transition-colors">
-                        View All <i class="fas fa-arrow-right ml-1"></i>
-                    </button>
-                </div>
-                
-                <div class="space-y-3 max-h-80 overflow-y-auto pr-2">
-                    <div class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-plug text-emerald-400"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-white text-sm font-medium truncate">Unplug devices when not in use</p>
-                            <p class="text-white/50 text-xs">Saves up to 10% on electricity</p>
-                        </div>
-                        <button class="px-4 py-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs font-medium transition-colors">
-                            Apply
-                        </button>
-                    </div>
-                    
-                    <div class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all">
-                        <div class="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-temperature-low text-blue-400"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-white text-sm font-medium truncate">Set AC to 24°C instead of 20°C</p>
-                            <p class="text-white/50 text-xs">Reduces cooling energy by 18%</p>
-                        </div>
-                        <button class="px-4 py-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs font-medium transition-colors">
-                            Apply
-                        </button>
-                    </div>
-                    
-                    <div class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all">
-                        <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-lightbulb text-purple-400"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-white text-sm font-medium truncate">Switch to LED lighting</p>
-                            <p class="text-white/50 text-xs">Uses 75% less energy</p>
-                        </div>
-                        <button class="px-4 py-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs font-medium transition-colors">
-                            Apply
-                        </button>
-                    </div>
-                    
-                    <div class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all">
-                        <div class="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-walking text-amber-400"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-white text-sm font-medium truncate">Walk or bike for short distances</p>
-                            <p class="text-white/50 text-xs">Under 2km trips = zero emissions</p>
-                        </div>
-                        <button class="px-4 py-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs font-medium transition-colors">
-                            Apply
-                        </button>
-                    </div>
-                    
-                    <div class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all">
-                        <div class="w-10 h-10 rounded-xl bg-pink-500/20 flex items-center justify-center flex-shrink-0">
-                            <i class="fas fa-mobile-alt text-pink-400"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="text-white text-sm font-medium truncate">Enable power saving mode</p>
-                            <p class="text-white/50 text-xs">Extends battery & reduces charging</p>
-                        </div>
-                        <button class="px-4 py-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs font-medium transition-colors">
-                            Apply
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="border-t border-white/5 py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center">
-                        <i class="fas fa-leaf text-white text-sm"></i>
-                    </div>
-                    <span class="text-white/70 text-sm">ZeroTrace © 2025</span>
-                </div>
-                <div class="flex items-center gap-6">
-                    <a href="#" class="text-white/50 hover:text-emerald-400 text-sm transition-colors">Privacy</a>
-                    <a href="#" class="text-white/50 hover:text-emerald-400 text-sm transition-colors">Terms</a>
-                    <a href="#" class="text-white/50 hover:text-emerald-400 text-sm transition-colors">Contact</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        // Donut Chart
-        const donutCtx = document.getElementById('donutChart').getContext('2d');
-        new Chart(donutCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Electricity', 'Transport', 'Devices', 'Food'],
-                datasets: [{
-                    data: [75, 15, 8, 2],
-                    backgroundColor: [
-                        '#10b981',
-                        '#3b82f6',
-                        '#a855f7',
-                        '#f59e0b'
-                    ],
-                    borderColor: 'transparent',
-                    borderWidth: 0,
-                    hoverOffset: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                cutout: '70%',
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleColor: '#fff',
-                        bodyColor: '#fff',
-                        padding: 12,
-                        cornerRadius: 8,
-                        displayColors: true,
-                        callbacks: {
-                            label: function(context) {
-                                return context.label + ': ' + context.raw + '%';
-                            }
-                        }
-                    }
-                }
-            }
-        });
-
-        // Line Chart
-        const lineCtx = document.getElementById('lineChart').getContext('2d');
-        new Chart(lineCtx, {
-            type: 'line',
-            data: {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                datasets: [{
-                    label: 'CO₂ (kg)',
-                    data: [72, 68, 91, 65, 52, 58, 81],
-                    borderColor: '#10b981',
-                    backgroundColor: (context) => {
-                        const chart = context.chart;
-                        const {ctx, chartArea} = chart;
-                        if (!chartArea) return null;
-                        const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
-                        gradient.addColorStop(0, 'rgba(16, 185, 129, 0)');
-                        gradient.addColorStop(1, 'rgba(16, 185, 129, 0.2)');
-                        return gradient;
-                    },
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#10b981',
-                    pointBorderColor: '#0a0f0d',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        grid: { display: false },
-                        ticks: { color: 'rgba(255, 255, 255, 0.5)', font: { size: 11 } }
-                    },
-                    y: {
-                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                        ticks: { 
-                            color: 'rgba(255, 255, 255, 0.5)', 
-                            font: { size: 11 },
-                            callback: function(value) { return value + ' kg'; }
-                        },
-                        min: 40,
-                        max: 100
-                    }
-                },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleColor: '#fff',
-                        bodyColor: '#fff',
-                        padding: 12,
-                        cornerRadius: 8,
-                        callbacks: {
-                            label: function(context) {
-                                return context.raw + ' kg CO₂';
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    </script>
-</body>
-</html>
+        .btn-login {
             background: linear-gradient(135deg, var(--accent-warm), var(--accent-hot));
             color: white;
             border: none;
