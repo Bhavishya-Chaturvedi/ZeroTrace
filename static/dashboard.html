@@ -3,178 +3,824 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CarboTracker - Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>ZeroTrace - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --dark-green: #2D6A4F;
-            --medium-green: #40916C;
-            --light-green: #95D5B2;
-            --very-light-green: #D8F3DC;
-            --cream: #FFF8E8;
-            --dark-cream: #F0E6D2;
-            --text-dark: #1B4332;
-            --text-light: #FFF8E8;
-            --accent: #74C69D;
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'zt-dark': '#0a0f0d',
+                        'zt-green': '#10b981',
+                        'zt-green-dark': '#059669',
+                        'zt-green-light': '#34d399',
+                        'zt-accent': '#f59e0b',
+                        'zt-accent-red': '#ef4444',
+                        'zt-glass': 'rgba(255, 255, 255, 0.05)',
+                        'zt-glass-border': 'rgba(255, 255, 255, 0.1)',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'pulse-slow': 'pulse 3s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                    },
+                },
+            },
         }
-
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         body {
-            background-color: var(--cream);
-            color: var(--text-dark);
-            line-height: 1.6;
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a0f0d 0%, #0f2922 50%, #0a0f0d 100%);
+            min-height: 100vh;
+            color: white;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
         }
-
-        header {
-            background-color: var(--dark-green);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
         }
-
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(16, 185, 129, 0.3);
+            border-radius: 10px;
         }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: var(--text-light);
-            font-size: 1.5rem;
-            font-weight: 700;
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(16, 185, 129, 0.5);
         }
-
-        .leaf-icon {
-            font-size: 1.8rem;
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
         }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            color: var(--text-light);
-            text-decoration: none;
-            font-weight: 500;
+        
+        .glass-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
             transition: all 0.3s ease;
-            padding: 0.5rem 0;
-            position: relative;
         }
-
-        .nav-links a:after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: 0;
-            left: 0;
-            background-color: var(--light-green);
-            transition: width 0.3s ease;
+        
+        .glass-card:hover {
+            background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.05) 100%);
+            border-color: rgba(16, 185, 129, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
-
-        .nav-links a:hover:after {
-            width: 100%;
+        
+        .text-gradient {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
+        
+        .glow-green {
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
+        }
+        
+        .glow-accent {
+            box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
+        }
+        
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #10b981, #34d399);
+            border-radius: 10px;
+            transition: width 1s ease-out;
+        }
+        
+        .progress-fill.danger {
+            background: linear-gradient(90deg, #ef4444, #f87171);
+        }
+        
+        .progress-fill.warning {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        }
+        
+        .bg-pattern {
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(16, 185, 129, 0.05) 0%, transparent 30%);
+        }
+    </style>
+</head>
+<body class="bg-pattern min-h-screen">
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-2">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center">
+                        <i class="fas fa-leaf text-white text-lg"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gradient">ZeroTrace</span>
+                </div>
+                
+                <!-- Links -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#" class="text-white/80 hover:text-emerald-400 transition-colors text-sm font-medium">Dashboard</a>
+                    <a href="#" class="text-white/50 hover:text-emerald-400 transition-colors text-sm font-medium">Insights</a>
+                    <a href="#" class="text-white/50 hover:text-emerald-400 transition-colors text-sm font-medium">Reports</a>
+                </div>
+                
+                <!-- Right side -->
+                <div class="flex items-center gap-4">
+                    <button class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 transition-all border border-white/10">
+                        <i class="fas fa-user text-white/70"></i>
+                        <span class="text-sm text-white/70">Sign In</span>
+                    </button>
+                    <button class="px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 transition-all font-medium text-sm shadow-lg shadow-emerald-500/25">
+                        Get Started
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-        .btn-login {
-            background-color: var(--accent);
-            color: var(--dark-green);
+    <!-- Main Content -->
+    <main class="pt-24 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <!-- Hero Section -->
+        <section class="mb-8 animate-slide-up">
+            <div class="glass-card p-8 md:p-10 relative overflow-hidden">
+                <!-- Decorative elements -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+                <div class="absolute bottom-0 left-0 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
+                
+                <div class="relative z-10">
+                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                        <div>
+                            <p class="text-white/50 text-sm font-medium mb-2">TODAY'S EMISSIONS</p>
+                            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2">
+                                You emitted <span class="text-gradient">81.18 kg</span> CO₂
+                            </h1>
+                            <div class="flex items-center gap-2 mt-3">
+                                <span class="flex items-center gap-1 px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-sm font-medium">
+                                    <i class="fas fa-arrow-up text-xs"></i>
+                                    +12%
+                                </span>
+                                <span class="text-white/50 text-sm">compared to yesterday</span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col gap-4 min-w-[300px]">
+                            <div class="flex justify-between items-center">
+                                <span class="text-white/70 text-sm font-medium">Daily Goal</span>
+                                <span class="text-white text-sm font-semibold">60 kg / 81.18 kg</span>
+                            </div>
+                            <div class="progress-bar h-3">
+                                <div class="progress-fill danger h-full" style="width: 135%"></div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
+                                <span class="text-red-400 text-sm">35% over target</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Insight Card -->
+        <section class="mb-8 animate-slide-up" style="animation-delay: 0.1s;">
+            <div class="glass-card p-6 md:p-8 border-l-4 border-l-amber-500">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-start gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-robot text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="text-lg font-semibold text-white">AI Recommendation</h3>
+                                <span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 text-xs font-medium">NEW</span>
+                            </div>
+                            <p class="text-white/70 text-sm leading-relaxed max-w-xl">
+                                Electricity usage contributes <span class="text-white font-semibold">92%</span> of your emissions. 
+                                Reducing AC usage by 2 hours can cut <span class="text-emerald-400 font-semibold">18% CO₂</span>.
+                            </p>
+                        </div>
+                    </div>
+                    <button class="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 transition-all font-medium text-sm shadow-lg shadow-amber-500/25 whitespace-nowrap">
+                        <i class="fas fa-magic mr-2"></i>
+                        Apply Suggestion
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Actions & Emissions Breakdown -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Quick Actions -->
+            <section class="animate-slide-up" style="animation-delay: 0.2s;">
+                <div class="glass-card p-6 h-full">
+                    <h3 class="text-lg font-semibold text-white mb-5">Quick Actions</h3>
+                    <div class="flex flex-col gap-3">
+                        <button class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-emerald-500/30 transition-all group">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i class="fas fa-receipt text-white text-lg"></i>
+                            </div>
+                            <div class="text-left">
+                                <p class="text-white font-medium">Scan Bill</p>
+                                <p class="text-white/50 text-xs">Upload electricity bill</p>
+                            </div>
+                            <i class="fas fa-chevron-right text-white/30 ml-auto group-hover:text-emerald-400 transition-colors"></i>
+                        </button>
+                        
+                        <button class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-emerald-500/30 transition-all group">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i class="fas fa-car text-white text-lg"></i>
+                            </div>
+                            <div class="text-left">
+                                <p class="text-white font-medium">Log Transport</p>
+                                <p class="text-white/50 text-xs">Record your commute</p>
+                            </div>
+                            <i class="fas fa-chevron-right text-white/30 ml-auto group-hover:text-emerald-400 transition-colors"></i>
+                        </button>
+                        
+                        <button class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-emerald-500/30 transition-all group">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i class="fas fa-laptop text-white text-lg"></i>
+                            </div>
+                            <div class="text-left">
+                                <p class="text-white font-medium">Track Devices</p>
+                                <p class="text-white/50 text-xs">Monitor energy usage</p>
+                            </div>
+                            <i class="fas fa-chevron-right text-white/30 ml-auto group-hover:text-emerald-400 transition-colors"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Emissions Breakdown Donut -->
+            <section class="animate-slide-up" style="animation-delay: 0.3s;">
+                <div class="glass-card p-6 h-full">
+                    <h3 class="text-lg font-semibold text-white mb-5">Emissions Breakdown</h3>
+                    <div class="relative flex items-center justify-center">
+                        <div class="w-64 h-64">
+                            <canvas id="donutChart"></canvas>
+                        </div>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                            <span class="text-3xl font-bold text-white">81.2</span>
+                            <span class="text-white/50 text-sm">kg CO₂</span>
+                        </div>
+                    </div>
+                    <div class="mt-4 grid grid-cols-2 gap-3">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+                            <span class="text-white/70 text-xs">Electricity 75%</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                            <span class="text-white/70 text-xs">Transport 15%</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-purple-500"></div>
+                            <span class="text-white/70 text-xs">Devices 8%</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+                            <span class="text-white/70 text-xs">Food 2%</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Weekly Trend -->
+            <section class="animate-slide-up" style="animation-delay: 0.4s;">
+                <div class="glass-card p-6 h-full">
+                    <div class="flex items-center justify-between mb-5">
+                        <h3 class="text-lg font-semibold text-white">Weekly Trend</h3>
+                        <span class="text-emerald-400 text-sm font-medium">Last 7 days</span>
+                    </div>
+                    <div class="h-48">
+                        <canvas id="lineChart"></canvas>
+                    </div>
+                    <div class="flex justify-between mt-4 text-xs">
+                        <div class="text-center">
+                            <p class="text-white/50">Lowest</p>
+                            <p class="text-emerald-400 font-semibold">52 kg</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-white/50">Average</p>
+                            <p class="text-white font-semibold">68 kg</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-white/50">Highest</p>
+                            <p class="text-red-400 font-semibold">91 kg</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Gamification Section -->
+        <section class="mb-8 animate-slide-up" style="animation-delay: 0.5s;">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="glass-card p-5 flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+                        <i class="fas fa-leaf text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-white/50 text-xs font-medium">SAVED THIS WEEK</p>
+                        <p class="text-2xl font-bold text-white">12 kg</p>
+                        <p class="text-emerald-400 text-xs">CO₂ reduced</p>
+                    </div>
+                </div>
+                
+                <div class="glass-card p-5 flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+                        <i class="fas fa-fire text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-white/50 text-xs font-medium">STREAK</p>
+                        <p class="text-2xl font-bold text-white">3 days</p>
+                        <p class="text-amber-400 text-xs">Keep it up!</p>
+                    </div>
+                </div>
+                
+                <div class="glass-card p-5 flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
+                        <i class="fas fa-trophy text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-white/50 text-xs font-medium">ECO LEVEL</p>
+                        <p class="text-2xl font-bold text-white">Beginner</p>
+                        <div class="w-24 h-1.5 bg-white/10 rounded-full mt-1">
+                            <div class="w-1/4 h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Actionable Tips Feed -->
+        <section class="animate-slide-up" style="animation-delay: 0.6s;">
+            <div class="glass-card p-6 md:p-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-white">Actionable Tips</h3>
+                    <button class="text-emerald-400 text-sm hover:text-emerald-300 transition-colors">
+                        View All <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-3 max-h-80 overflow-y-auto pr-2">
+                    <div class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-plug text-emerald-400"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-white text-sm font-medium truncate">Unplug devices when not in use</p>
+                            <p class="text-white/50 text-xs">Saves up to 10% on electricity</p>
+                        </div>
+                        <button class="px-4 py-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs font-medium transition-colors">
+                            Apply
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all">
+                        <div class="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-temperature-low text-blue-400"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-white text-sm font-medium truncate">Set AC to 24°C instead of 20°C</p>
+                            <p class="text-white/50 text-xs">Reduces cooling energy by 18%</p>
+                        </div>
+                        <button class="px-4 py-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs font-medium transition-colors">
+                            Apply
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all">
+                        <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-lightbulb text-purple-400"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-white text-sm font-medium truncate">Switch to LED lighting</p>
+                            <p class="text-white/50 text-xs">Uses 75% less energy</p>
+                        </div>
+                        <button class="px-4 py-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs font-medium transition-colors">
+                            Apply
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-walking text-amber-400"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-white text-sm font-medium truncate">Walk or bike for short distances</p>
+                            <p class="text-white/50 text-xs">Under 2km trips = zero emissions</p>
+                        </div>
+                        <button class="px-4 py-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs font-medium transition-colors">
+                            Apply
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all">
+                        <div class="w-10 h-10 rounded-xl bg-pink-500/20 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-mobile-alt text-pink-400"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-white text-sm font-medium truncate">Enable power saving mode</p>
+                            <p class="text-white/50 text-xs">Extends battery & reduces charging</p>
+                        </div>
+                        <button class="px-4 py-2 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs font-medium transition-colors">
+                            Apply
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center">
+                        <i class="fas fa-leaf text-white text-sm"></i>
+                    </div>
+                    <span class="text-white/70 text-sm">ZeroTrace © 2025</span>
+                </div>
+                <div class="flex items-center gap-6">
+                    <a href="#" class="text-white/50 hover:text-emerald-400 text-sm transition-colors">Privacy</a>
+                    <a href="#" class="text-white/50 hover:text-emerald-400 text-sm transition-colors">Terms</a>
+                    <a href="#" class="text-white/50 hover:text-emerald-400 text-sm transition-colors">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Donut Chart
+        const donutCtx = document.getElementById('donutChart').getContext('2d');
+        new Chart(donutCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Electricity', 'Transport', 'Devices', 'Food'],
+                datasets: [{
+                    data: [75, 15, 8, 2],
+                    backgroundColor: [
+                        '#10b981',
+                        '#3b82f6',
+                        '#a855f7',
+                        '#f59e0b'
+                    ],
+                    borderColor: 'transparent',
+                    borderWidth: 0,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                cutout: '70%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: true,
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.raw + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Line Chart
+        const lineCtx = document.getElementById('lineChart').getContext('2d');
+        new Chart(lineCtx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'CO₂ (kg)',
+                    data: [72, 68, 91, 65, 52, 58, 81],
+                    borderColor: '#10b981',
+                    backgroundColor: (context) => {
+                        const chart = context.chart;
+                        const {ctx, chartArea} = chart;
+                        if (!chartArea) return null;
+                        const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+                        gradient.addColorStop(0, 'rgba(16, 185, 129, 0)');
+                        gradient.addColorStop(1, 'rgba(16, 185, 129, 0.2)');
+                        return gradient;
+                    },
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#10b981',
+                    pointBorderColor: '#0a0f0d',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: 'rgba(255, 255, 255, 0.5)', font: { size: 11 } }
+                    },
+                    y: {
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: { 
+                            color: 'rgba(255, 255, 255, 0.5)', 
+                            font: { size: 11 },
+                            callback: function(value) { return value + ' kg'; }
+                        },
+                        min: 40,
+                        max: 100
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        padding: 12,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: function(context) {
+                                return context.raw + ' kg CO₂';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+            background: linear-gradient(135deg, var(--accent-warm), var(--accent-hot));
+            color: white;
             border: none;
-            padding: 0.6rem 1.5rem;
+            padding: 0.7rem 1.8rem;
             border-radius: 30px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(244, 162, 97, 0.4);
         }
 
         .btn-login:hover {
-            background-color: var(--light-green);
-            transform: translateY(-2px);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(244, 162, 97, 0.6);
         }
 
+        /* ─── HERO: two-column layout ─── */
         .dashboard-hero {
-            padding: 3rem 0;
-            background-color: var(--very-light-green);
-            text-align: center;
+            width: 90%;
+            margin: 20px auto 1px auto;
+            padding: 2.5rem 3rem;
+            border-radius: 24px;
+            background: linear-gradient(135deg, var(--very-light-green), #fff);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .hero-text { flex: 1; }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+            opacity: 0.85;
         }
 
         .dashboard-hero h1 {
-            font-size: 2.5rem;
+            font-size: 3rem;
+            font-weight: 800;
             color: var(--dark-green);
-            margin-bottom: 1rem;
+            margin-bottom: 0.6rem;
+            letter-spacing: -0.5px;
         }
 
+        .hero-stat {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--accent-hot);
+            line-height: 1;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero-stat-label {
+            font-size: 1rem;
+            color: var(--text-dark);
+            opacity: 0.8;
+            margin-top: 0.5rem;
+            font-weight: 600;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .feature-card {
+            animation: fadeInUp 0.6s ease-out backwards;
+        }
+
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.3s; }
+
         .dashboard-hero p {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: var(--text-dark);
         }
 
+        /* Pie chart panel */
+        .hero-pie {
+            flex: 0 0 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hero-pie-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--dark-green);
+            text-align: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .pie-canvas-wrap {
+            position: relative;
+            width: 240px;
+            height: 240px;
+        }
+
+        .pie-center-stat {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .pie-center-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--dark-green);
+        }
+
+        .pie-center-label {
+            font-size: 0.75rem;
+            color: var(--text-dark);
+            opacity: 0.7;
+        }
+
+        .pie-legend {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            width: 100%;
+        }
+
+        .pie-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .pie-legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .no-data-msg {
+            font-size: 0.8rem;
+            color: #666;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        /* ─── dashboard content ─── */
         .dashboard-content {
-            padding: 3rem 0;
+            padding: 1rem 0;
+            width: 100%;
         }
 
         .feature-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
             margin-bottom: 2rem;
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .feature-card {
-            background-color: var(--cream);
-            border-radius: 10px;
+            background-color: var(--card);
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.8);
         }
 
         .feature-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: var(--shadow-hover);
         }
 
         .feature-icon {
-            height: 120px;
-            background-color: var(--light-green);
+            height: 100px;
+            background: linear-gradient(135deg, var(--light-green), var(--very-light-green));
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
+            font-size: 3rem;
             color: var(--dark-green);
         }
 
-        .feature-content {
-            padding: 1.5rem;
-        }
+        .feature-content { padding: 1.5rem; }
 
         .feature-content h3 {
-            font-size: 1.4rem;
-            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
             color: var(--dark-green);
         }
 
         .btn-primary {
-            background-color: var(--dark-green);
+            background: linear-gradient(135deg, var(--dark-green), var(--medium-green));
             color: var(--text-light);
             border: none;
             padding: 0.8rem 1.8rem;
@@ -185,11 +831,12 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(45, 106, 79, 0.3);
         }
 
         .btn-primary:hover {
-            background-color: var(--medium-green);
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(45, 106, 79, 0.4);
         }
 
         .status-text {
@@ -198,33 +845,105 @@
         }
 
         .chart-container {
-            background-color: var(--cream);
-            border-radius: 10px;
+            background-color: var(--card);
+            border-radius: 20px;
             padding: 2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 2rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(255,255,255,0.8);
         }
 
+        .chart-recommend-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            width: 90%;
+            margin: 3rem auto 2rem auto;
+        }
+
+        /* ─── Tips panel: fixed height to match chart ─── */
         .recommendations {
-            background-color: var(--cream);
-            border-radius: 10px;
+            background-color: var(--card);
+            border-radius: 20px;
             padding: 2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-        .chart-controls .btn-primary {
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            border-radius: 30px;
-        }
-        .chart-controls .btn-primary.active {
-            background-color: var(--medium-green);
-            box-shadow: 0 0 10px rgba(64, 145, 108, 0.4);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(255,255,255,0.8);
         }
 
-footer {
-            background-color: var(--dark-green);
-            color: var(--text-light);
-            padding: 4rem 0 2rem;
+        .chart-recommend-grid .recommendations {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .recommendations h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark-green);
+            margin-bottom: 1rem;
+            flex-shrink: 0;
+        }
+
+        /* Quote block */
+        .footprint-quote {
+            background: linear-gradient(135deg, var(--very-light-green), var(--light-green));
+            border-left: 4px solid var(--accent-hot);
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1rem;
+            flex-shrink: 0;
+        }
+
+        .footprint-quote p {
+            font-size: 0.82rem;
+            font-style: italic;
+            color: var(--text-dark);
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .footprint-quote span {
+            font-size: 0.75rem;
+            color: var(--medium-green);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        /* Single tip item in the side panel */
+        .tip-mini {
+            background: linear-gradient(135deg, var(--very-light-green), #fff);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            flex: 1;
+            overflow: hidden;
+            margin-bottom: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .tip-mini:hover {
+            transform: scale(1.02);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .tip-mini-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+
+        .tip-mini-text h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: var(--dark-green);
+        }
+
+        .tip-mini-text p {
+            font-size: 0.8rem;
+            color: var(--text-dark);
+            line-height: 1.4;
         }
 
         .chart-controls {
@@ -235,29 +954,190 @@ footer {
         }
 
         .chart-controls .btn-primary {
-            background-color: var(--dark-green);
+            background: linear-gradient(135deg, var(--dark-green), var(--medium-green));
             color: var(--text-light);
             border: none;
-            padding: 0.6rem 1.2rem;
+            padding: 0.7rem 1.4rem;
             border-radius: 30px;
             font-weight: 600;
             font-size: 0.95rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(45, 106, 79, 0.3);
         }
 
         .chart-controls .btn-primary:hover {
-            background-color: var(--medium-green);
             transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            box-shadow: 0 6px 20px rgba(45, 106, 79, 0.4);
         }
 
         .chart-controls .btn-primary.active {
-            background-color: var(--medium-green);
-            box-shadow: 0 0 12px rgba(64, 145, 108, 0.5);
-            transform: translateY(-1px);
+            background: linear-gradient(135deg, var(--accent-hot), var(--accent-warm));
+            box-shadow: 0 0 20px rgba(231, 111, 81, 0.5);
+            transform: translateY(-2px);
         }
+
+        /* ─── Report section: compact table ─── */
+        .report-section {
+            background-color: var(--cream);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 2rem;
+        }
+
+        .report-section h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--dark-green);
+            margin-bottom: 1.5rem;
+        }
+
+        .report-controls {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .report-controls .btn-primary {
+            padding: 0.7rem 1.4rem;
+            font-size: 0.95rem;
+            border-radius: 30px;
+        }
+
+        .report-controls .btn-primary.active {
+            background: linear-gradient(135deg, var(--accent-hot), var(--accent-warm));
+            box-shadow: 0 0 15px rgba(231, 111, 81, 0.4);
+        }
+
+        .report-category { margin-bottom: 1.5rem; }
+
+        .report-category h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark-green);
+            margin-bottom: 0.8rem;
+        }
+
+        /* Scrollable compact table wrapper */
+        .table-scroll {
+            max-height: 160px;
+            overflow-y: auto;
+            border-radius: 8px;
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .report-table th {
+            background-color: var(--light-green);
+            color: var(--text-dark);
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.85rem;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        .report-table td {
+            background-color: var(--very-light-green);
+            padding: 0.5rem 0.8rem;
+            border-top: 1px solid var(--light-green);
+            font-size: 0.85rem;
+        }
+
+        /* Full recommendations section below */
+        .recommendations-full {
+            background-color: var(--card);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+
+        .recommendations-full h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--dark-green);
+            margin-bottom: 1.5rem;
+        }
+
+        .recommendation-item {
+            background: linear-gradient(135deg, var(--very-light-green), #fff);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.3s ease;
+        }
+
+        .recommendation-item:hover {
+            transform: translateX(8px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .recommendation-icon { font-size: 2rem; color: var(--medium-green); }
+
+        .recommendation-text h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark-green);
+        }
+
+        .mt-2 { margin-top: 0.5rem; }
+
+        .download-btn {
+            background: linear-gradient(135deg, var(--dark-green), var(--medium-green));
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 15px rgba(45, 106, 79, 0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(45, 106, 79, 0.5);
+        }
+
+        footer {
+            background: linear-gradient(135deg, var(--dark-green), #1a3a2f);
+            color: var(--text-light);
+            padding: 4rem 0 2rem;
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-hot), var(--accent-warm), var(--accent));
+        }
+
         .footer-content {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr;
@@ -279,17 +1159,14 @@ footer {
             opacity: 0.9;
         }
 
-        .social-icons {
-            display: flex;
-            gap: 1rem;
-        }
+        .social-icons { display: flex; gap: 1rem; }
 
         .social-icons a {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             background-color: rgba(255, 255, 255, 0.1);
             color: var(--text-light);
@@ -297,9 +1174,10 @@ footer {
         }
 
         .social-icons a:hover {
-            background-color: var(--accent);
-            color: var(--dark-green);
-            transform: translateY(-3px);
+            background: linear-gradient(135deg, var(--accent-warm), var(--accent-hot));
+            color: white;
+            transform: translateY(-4px) scale(1.1);
+            box-shadow: 0 8px 20px rgba(244, 162, 97, 0.4);
         }
 
         .footer-links h3 {
@@ -307,6 +1185,7 @@ footer {
             margin-bottom: 1.5rem;
             position: relative;
             padding-bottom: 0.7rem;
+            font-weight: 700;
         }
 
         .footer-links h3::after {
@@ -314,18 +1193,14 @@ footer {
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 40px;
-            height: 2px;
-            background-color: var(--accent);
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-warm), var(--accent));
+            border-radius: 2px;
         }
 
-        .footer-links ul {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 0.8rem;
-        }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 0.8rem; }
 
         .footer-links a {
             color: var(--text-light);
@@ -336,215 +1211,35 @@ footer {
 
         .footer-links a:hover {
             opacity: 1;
-            color: var(--accent);
-            padding-left: 5px;
+            color: var(--accent-warm);
+            padding-left: 8px;
         }
 
         .copyright {
             text-align: center;
             margin-top: 3rem;
             padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
             font-size: 0.9rem;
-            opacity: 0.7;
+            opacity: 0.8;
         }
 
         @media (max-width: 992px) {
-            .footer-content {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        .chart-controls {
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
+            .footer-content { grid-template-columns: 1fr 1fr; }
+            .dashboard-hero { flex-direction: column; padding: 2rem; }
+            .hero-pie { flex: none; }
+            .feature-cards { grid-template-columns: 1fr; gap: 1.5rem; }
+            .chart-recommend-grid { grid-template-columns: 1fr; }
+            .hero-stat { font-size: 3rem; }
+            .pie-canvas-wrap { width: 200px; height: 200px; }
         }
 
-        .chart-controls .btn-primary {
-            background-color: var(--dark-green);
-            color: var(--text-light);
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .chart-controls .btn-primary:hover {
-            background-color: var(--medium-green);
-            transform: translateY(-2px);
-        }
-
-        .chart-controls .btn-primary.active {
-            background-color: var(--medium-green);
-            box-shadow: 0 0 10px rgba(64, 145, 108, 0.4);
-        }
-
-        .recommendations h2 {
-            font-size: 1.8rem;
-            color: var(--dark-green);
-            margin-bottom: 1.5rem;
-        }
-
-        .recommendation-item {
-            background-color: var(--very-light-green);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .recommendation-icon {
-            font-size: 2rem;
-            color: var(--medium-green);
-        }
-
-        .recommendation-text {
-            flex: 1;
-        }
-
-        .recommendation-text h3 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .mt-2 {
-            margin-top: 0.5rem;
-        }
-
-        .report-section {
-            background-color: var(--cream);
-            border-radius: 10px;
-            padding: 2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 2rem;
-        }
-
-        .report-section h2 {
-            font-size: 1.8rem;
-            color: var(--dark-green);
-            margin-bottom: 1.5rem;
-        }
-
-        .report-controls {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .report-controls .btn-primary {
-            padding: 0.6rem 1.2rem;
-            font-size: 0.95rem;
-            border-radius: 30px;
-        }
-
-        .report-controls .btn-primary.active {
-            background-color: var(--medium-green);
-            box-shadow: 0 0 10px rgba(64, 145, 108, 0.4);
-        }
-
-        .report-category {
-            margin-bottom: 2rem;
-        }
-
-        .report-category h3 {
-            font-size: 1.4rem;
-            color: var(--dark-green);
-            margin-bottom: 1rem;
-        }
-
-        .report-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .report-table th {
-            background-color: var(--light-green);
-            color: var(--text-dark);
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-        }
-
-        .report-table td {
-            background-color: var(--very-light-green);
-            padding: 1rem;
-            border-top: 1px solid var(--light-green);
-        }
-
-        .tips-section {
-            background-color: var(--cream);
-            border-radius: 10px;
-            padding: 2rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 2rem;
-        }
-
-        .tips-section h2 {
-            font-size: 1.8rem;
-            color: var(--dark-green);
-            margin-bottom: 1.5rem;
-        }
-
-        .tip-item {
-            background-color: var(--very-light-green);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .tip-icon {
-            font-size: 2rem;
-            color: var(--medium-green);
-        }
-
-        .tip-text {
-            flex: 1;
-        }
-
-        .tip-text h3 {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .download-btn {
-            background-color: var(--accent);
-            color: var(--dark-green);
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .download-btn:hover {
-            background-color: var(--light-green);
-            transform: translateY(-2px);
-        }
-
-        .download-btn i {
-            font-size: 1.2rem;
+        @media (max-width: 576px) {
+            .dashboard-hero { padding: 1.5rem; gap: 1.5rem; }
+            .hero-stat { font-size: 2.5rem; }
+            .hero-pie { width: 100%; }
+            .feature-content { padding: 1.2rem; }
+            .report-section { padding: 1.5rem; }
         }
     </style>
 </head>
@@ -553,11 +1248,11 @@ footer {
 <header>
     <div class="container">
         <nav>
-            <div class="logo"><span class="leaf-icon">🍃</span> CarboTracker</div>
+            <div class="logo"><span class="leaf-icon">🍃</span> ZeroTrace</div>
             <div class="nav-links">
                 <a href="#features">Features</a>
-                <a href=""index.html#how-it-works">How It Works</a>
-                <a href=/electricity>Dashboard</a>
+                <a href="index.html#how-it-works">How It Works</a>
+                <a href="/electricity">Dashboard</a>
                 <a href="#">About</a>
             </div>
             <button class="btn-login">Sign In</button>
@@ -565,10 +1260,29 @@ footer {
     </div>
 </header>
 
+<!-- ─── HERO with Pie Chart ─── -->
 <section class="dashboard-hero">
-    <div class="container">
-        <h1>Welcome to Your Dashboard</h1>
+    <div class="hero-text">
+        <h1>Your Dashboard</h1>
         <p>Track your carbon footprint and get personalized recommendations to live more sustainably.</p>
+        <div class="hero-stat" id="total-emissions">0.00</div>
+        <div class="hero-stat-label">kg CO₂ Total Emissions</div>
+    </div>
+
+    <div class="hero-pie">
+        <div class="hero-pie-title">Today's Emissions Breakdown</div>
+        <div class="pie-canvas-wrap">
+            <canvas id="heroPieChart" role="img" aria-label="Pie chart showing today's carbon emissions split by device, transport, and electricity">No emission data yet.</canvas>
+            <div class="pie-center-stat">
+                <div class="pie-center-value" id="pie-total">0</div>
+                <div class="pie-center-label">kg CO₂</div>
+            </div>
+        </div>
+        <div class="pie-legend">
+            <div class="pie-legend-item"><span class="pie-legend-dot" style="background:#2D6A4F;"></span><span id="pie-label-device">Device: —</span></div>
+            <div class="pie-legend-item"><span class="pie-legend-dot" style="background:#40916C;"></span><span id="pie-label-transport">Transport: —</span></div>
+            <div class="pie-legend-item"><span class="pie-legend-dot" style="background:#95D5B2;"></span><span id="pie-label-electricity">Electricity: —</span></div>
+        </div>
     </div>
 </section>
 
@@ -602,13 +1316,47 @@ footer {
             </div>
         </div>
 
-        <div class="chart-container">
-            <h2 style="font-size: 1.8rem; color: var(--dark-green); margin-bottom: 1rem;">Carbon Footprint Overview</h2>
-            <div class="chart-controls">
-                <button id="btn10Days" class="btn-primary active">Last 10 Days</button>
-                <button id="btnAll" class="btn-primary">All Time</button>
+        <!-- Chart + Tips side by side -->
+        <div class="chart-recommend-grid">
+            <div class="chart-container">
+                <h2 style="font-size: 1.4rem; color: var(--dark-green); margin-bottom: 0.8rem;">Carbon Footprint Overview</h2>
+                <div class="chart-controls">
+                    <button id="btn10Days" class="btn-primary active">Last 10 Days</button>
+                    <button id="btnAll" class="btn-primary">All Time</button>
+                </div>
+                <canvas id="carbonChart" role="img" aria-label="Line chart of total CO2 emissions over time">Carbon footprint trend data.</canvas>
             </div>
-            <canvas id="carbonChart"></canvas>
+
+            <!-- Tips panel: quote + tip, height-constrained -->
+            <div class="recommendations">
+                <h2>Tips to Reduce Your Footprint</h2>
+
+                <div class="footprint-quote">
+                    <p>"We do not inherit the earth from our ancestors — we borrow it from our children."</p>
+                    <span>— Native American Proverb</span>
+                </div>
+
+                <div class="tip-mini" id="sideTipBox">
+                    <div class="tip-mini-icon">🌱</div>
+                    <div class="tip-mini-text">
+                        <h3>Switch to Renewable Energy</h3>
+                        <p>Consider installing solar panels or switching to a green energy provider to cut electricity emissions.</p>
+                    </div>
+                </div>
+                <div class="tip-mini" id="sideTipBox">
+                    <div class="tip-mini-icon">🌱</div>
+                    <div class="tip-mini-text">
+                        <h3>Use Public Transport/h3>
+                        <p>Opt for buses, trains, or biking for daily commutes to lower your transportation emissions.</p>
+                    </div>
+                </div>
+                <div class="tip-mini" id="sideTipBox">
+                    <div class="tip-mini-icon">🌱</div>
+                    <div class="tip-mini-text">
+                        <h3>Energy-Efficient Devices</h3>
+                        <p>Replace old appliances with energy-star rated ones and unplug devices when not in use.</p>
+                </div>
+            </div>
         </div>
 
         <!-- Detailed Report Section -->
@@ -618,52 +1366,61 @@ footer {
                 <button id="reportDaily" class="btn-primary active">Daily</button>
                 <button id="reportMonthly" class="btn-primary">Monthly</button>
             </div>
+
             <div class="report-category" id="device-report">
                 <h3>Devices</h3>
-                <table class="report-table">
-                    <thead>
-                        <tr>
-                            <th>Date/Month</th>
-                            <th>Energy (kWh)</th>
-                            <th>Emissions (kg CO₂)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="device-table-body"></tbody>
-                </table>
+                <div class="table-scroll">
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Date/Month</th>
+                                <th>Energy (kWh)</th>
+                                <th>Emissions (kg CO₂)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="device-table-body"></tbody>
+                    </table>
+                </div>
             </div>
+
             <div class="report-category" id="transport-report">
                 <h3>Transport</h3>
-                <table class="report-table">
-                    <thead>
-                        <tr>
-                            <th>Date/Month</th>
-                            <th>Distance (km)</th>
-                            <th>Emissions (kg CO₂)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="transport-table-body"></tbody>
-                </table>
+                <div class="table-scroll">
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Date/Month</th>
+                                <th>Distance (km)</th>
+                                <th>Emissions (kg CO₂)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transport-table-body"></tbody>
+                    </table>
+                </div>
             </div>
+
             <div class="report-category" id="electricity-report">
                 <h3>Electricity</h3>
-                <table class="report-table">
-                    <thead>
-                        <tr>
-                            <th>Date/Month</th>
-                            <th>Units (kWh)</th>
-                            <th>Bill (₹)</th>
-                            <th>Emissions (kg CO₂)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="electricity-table-body"></tbody>
-                </table>
+                <div class="table-scroll">
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Date/Month</th>
+                                <th>Units (kWh)</th>
+                                <th>Bill (₹)</th>
+                                <th>Emissions (kg CO₂)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="electricity-table-body"></tbody>
+                    </table>
+                </div>
             </div>
+
             <button class="download-btn" id="download-report"><i class="fas fa-download"></i> Download Report (CSV)</button>
         </div>
 
-
-
-        <div class="recommendations">
+        <!-- Full Recommendations -->
+        <div class="recommendations-full">
             <h2>Recommendations to Reduce Your Footprint</h2>
             <div class="recommendation-item">
                 <div class="recommendation-icon">🌱</div>
@@ -690,61 +1447,59 @@ footer {
     </div>
 </section>
 
-    <footer>
-        <div class="container footer-content">
-            <div class="footer-about">
-                <div class="footer-logo">
-                    <span class="leaf-icon">🍃</span>
-                    <span>CarboTracker</span>
-                </div>
-                <p>Empowering individuals to understand and reduce their carbon footprint through advanced AI and deep learning technology.</p>
-                <div class="social-icons">
-                    <a href="#"><i class="fas fa-globe"></i></a>
-                    <a href="#"><i class="fas fa-mobile-alt"></i></a>
-                    <a href="#"><i class="fas fa-book"></i></a>
-                    <a href="#"><i class="fas fa-camera"></i></a>
-                </div>
-            </div>
-            <div class="footer-links">
-                <h3>Features</h3>
-                <ul>
-                    <li><a href="#">Receipt Scanner</a></li>
-                    <li><a href="#">Image Analysis</a></li>
-                    <li><a href="#">Smart Recommendations</a></li>
-                    <li><a href="#">Carbon Dashboard</a></li>
-                </ul>
-            </div>
-            <div class="footer-links">
-                <h3>Company</h3>
-                <ul>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Our Mission</a></li>
-                    <li><a href="#">Sustainability</a></li>
-                    <li><a href="#">Partners</a></li>
-                </ul>
-            </div>
-            <div class="footer-links">
-                <h3>Support</h3>
-                <ul>
-                    <li><a href="#">Help Center</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms of Service</a></li>
-                    <li><a href="#">Contact Us</a></li>
-                </ul>
+<footer>
+    <div class="container footer-content">
+        <div class="footer-about">
+            <div class="footer-logo"><span class="leaf-icon">🍃</span><span>ZeroTrace</span></div>
+            <p>Empowering individuals to understand and reduce their carbon footprint through advanced AI and deep learning technology.</p>
+            <div class="social-icons">
+                <a href="#"><i class="fas fa-globe"></i></a>
+                <a href="#"><i class="fas fa-mobile-alt"></i></a>
+                <a href="#"><i class="fas fa-book"></i></a>
+                <a href="#"><i class="fas fa-camera"></i></a>
             </div>
         </div>
-        <div class="copyright container">
-            <p>© 2025 CarboTracker. All rights reserved.</p>
+        <div class="footer-links">
+            <h3>Features</h3>
+            <ul>
+                <li><a href="#">Receipt Scanner</a></li>
+                <li><a href="#">Image Analysis</a></li>
+                <li><a href="#">Smart Recommendations</a></li>
+                <li><a href="#">Carbon Dashboard</a></li>
+            </ul>
         </div>
-    </footer>
+        <div class="footer-links">
+            <h3>Company</h3>
+            <ul>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Our Mission</a></li>
+                <li><a href="#">Sustainability</a></li>
+                <li><a href="#">Partners</a></li>
+            </ul>
+        </div>
+        <div class="footer-links">
+            <h3>Support</h3>
+            <ul>
+                <li><a href="#">Help Center</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+                <li><a href="#">Contact Us</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="copyright container">
+        <p>© 2025 ZeroTrace. All rights reserved.</p>
+    </div>
+</footer>
 
 <script>
     const TODAY = '2025-11-08';
-    let allData = []; 
-    let allTransport = []; 
+    let allData = [];
+    let allTransport = [];
     let allDevice = [];
     let allElectricity = [];
     let currentReportMode = 'daily';
+    let heroPieChart = null;
 
     const ctx = document.getElementById('carbonChart').getContext('2d');
     const carbonChart = new Chart(ctx, {
@@ -769,7 +1524,66 @@ footer {
         }
     });
 
-    // Card navigation
+    // Init hero pie (empty state)
+    function initHeroPie() {
+        const pieCtx = document.getElementById('heroPieChart').getContext('2d');
+        heroPieChart = new Chart(pieCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Device', 'Transport', 'Electricity'],
+                datasets: [{
+                    data: [1, 1, 1],
+                    backgroundColor: ['#E76F51', '#2D6A4F', '#F4A261'],
+                    borderColor: '#ffffff',
+                    borderWidth: 3,
+                    hoverOffset: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                cutout: '65%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { 
+                        enabled: true,
+                        backgroundColor: 'rgba(45, 106, 79, 0.95)',
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        padding: 12,
+                        cornerRadius: 8
+                    }
+                }
+            }
+        });
+    }
+
+    function updateHeroPie(device, transport, electricity) {
+        const total = device + transport + electricity;
+        const pieData = total > 0 ? [device, transport, electricity] : [1, 1, 1];
+        heroPieChart.data.datasets[0].data = pieData;
+        heroPieChart.update();
+
+        // Update center stat
+        document.getElementById('pie-total').textContent = total > 0 ? total.toFixed(1) : '0';
+        
+        // Update hero stat
+        document.getElementById('total-emissions').textContent = total > 0 ? total.toFixed(2) : '0.00';
+
+        if (total > 0) {
+            document.getElementById('pie-label-device').textContent =
+                `Device: ${device.toFixed(2)} kg (${Math.round(device / total * 100)}%)`;
+            document.getElementById('pie-label-transport').textContent =
+                `Transport: ${transport.toFixed(2)} kg (${Math.round(transport / total * 100)}%)`;
+            document.getElementById('pie-label-electricity').textContent =
+                `Electricity: ${electricity.toFixed(2)} kg (${Math.round(electricity / total * 100)}%)`;
+        } else {
+            document.getElementById('pie-label-device').textContent = 'Device: no data';
+            document.getElementById('pie-label-transport').textContent = 'Transport: no data';
+            document.getElementById('pie-label-electricity').textContent = 'Electricity: no data';
+        }
+    }
+
     document.querySelectorAll('.feature-card').forEach(card => {
         card.addEventListener('click', () => {
             const page = card.getAttribute('data-page');
@@ -777,11 +1591,9 @@ footer {
         });
     });
 
-    // Chart Buttons
     document.getElementById('btn10Days').onclick = () => updateChartView('10days');
     document.getElementById('btnAll').onclick = () => updateChartView('all');
 
-    // Report Buttons
     document.getElementById('reportDaily').onclick = () => {
         currentReportMode = 'daily';
         updateReport('daily');
@@ -817,32 +1629,23 @@ footer {
 
             const deviceMap = {}, transportMap = {}, electricityMap = {};
 
-            // === Device ===
             allDevice.forEach(d => {
                 if (!d || d.device === 'All Devices') return;
                 const date = d.timestamp?.slice(0, 10);
-                if (date) {
-                    deviceMap[date] = (deviceMap[date] || 0) + (d.emissions_kg || 0);
-                }
+                if (date) deviceMap[date] = (deviceMap[date] || 0) + (d.emissions_kg || 0);
             });
 
-            // === Transport ===
             allTransport.forEach(t => {
                 if (!t) return;
                 const date = t.timestamp?.slice(0, 10);
-                if (date) {
-                    transportMap[date] = (transportMap[date] || 0) + (t.carbon_emissions_kg || 0);
-                }
+                if (date) transportMap[date] = (transportMap[date] || 0) + (t.carbon_emissions_kg || 0);
             });
 
-            // === Electricity ===
             allElectricity.forEach(e => {
                 if (!e || !e.date) return;
-                const date = e.date;
-                electricityMap[date] = (electricityMap[date] || 0) + (e.co2_emissions || 0);
+                electricityMap[e.date] = (electricityMap[e.date] || 0) + (e.co2_emissions || 0);
             });
 
-            // === Combine & Sort Chronologically (Oldest → Newest) ===
             const allDates = new Set([
                 ...Object.keys(deviceMap),
                 ...Object.keys(transportMap),
@@ -850,7 +1653,7 @@ footer {
             ]);
 
             allData = Array.from(allDates)
-                .sort((a, b) => a.localeCompare(b)) // Oldest first → Newest last
+                .sort((a, b) => a.localeCompare(b))
                 .map(date => ({
                     date,
                     device: deviceMap[date] || 0,
@@ -863,6 +1666,11 @@ footer {
             updateChartView('10days');
             updateReport('daily');
             generateTips();
+
+            // Update hero pie with today's breakdown
+            const todayData = allData.find(d => d.date === TODAY) || { device: 0, transport: 0, electricity: 0 };
+            updateHeroPie(todayData.device, todayData.transport, todayData.electricity);
+
         } catch (err) {
             console.error("Load error:", err);
         }
@@ -871,31 +1679,28 @@ footer {
     function updateDashboardToday() {
         const todayData = allData.find(d => d.date === TODAY) || { device: 0, transport: 0, electricity: 0 };
 
-        // Device
-        document.getElementById('deviceStatus').textContent = 
-            todayData.device > 0 
-                ? `Total device usage today: ${todayData.device.toFixed(3)} kg CO₂.` 
+        document.getElementById('deviceStatus').textContent =
+            todayData.device > 0
+                ? `Total device usage today: ${todayData.device.toFixed(3)} kg CO₂.`
                 : 'No device data tracked yet.';
 
-        // Transport
         const todayTransport = allTransport.filter(t => t?.timestamp?.startsWith(TODAY));
         if (todayTransport.length > 0) {
             const latest = todayTransport.sort((a,b) => (b.timestamp || '').localeCompare(a.timestamp || ''))[0];
-            document.getElementById('activityStatus').innerHTML = 
+            document.getElementById('activityStatus').innerHTML =
                 `<strong>Total Transport Today: ${todayData.transport.toFixed(2)} kg CO₂</strong><br>` +
                 `Latest: ${(latest.carbon_emissions_kg || 0).toFixed(2)} kg from <em>${(latest.transport_mode || 'Unknown').replace('_', ' ')}</em> (${latest.distance_km || 0} km)`;
         } else {
             document.getElementById('activityStatus').textContent = 'No activities logged yet.';
         }
 
-        // Electricity
         if (todayData.electricity > 0) {
-            document.getElementById('electricityStatus').innerHTML = 
+            document.getElementById('electricityStatus').innerHTML =
                 `<strong>Latest Bill:</strong> ${todayData.electricity.toFixed(2)} kg CO₂`;
             const days = new Set(allElectricity.map(e => e?.date).filter(Boolean)).size;
             const totalCO2 = allElectricity.reduce((sum, e) => sum + (e?.co2_emissions || 0), 0);
             const avgDaily = days > 0 ? (totalCO2 / days).toFixed(2) : '0';
-            document.getElementById('electricityAvg').textContent = 
+            document.getElementById('electricityAvg').textContent =
                 `Avg daily: ${avgDaily} kg CO₂ (${days} day${days>1?'s':''})`;
         } else {
             document.getElementById('electricityStatus').textContent = 'No bill scanned yet.';
@@ -929,7 +1734,6 @@ footer {
         const body = document.getElementById('device-table-body');
         body.innerHTML = '';
         const agg = {};
-
         allDevice.forEach(d => {
             if (!d || d.device === 'All Devices') return;
             const key = mode === 'daily' ? d.timestamp?.slice(0,10) : d.timestamp?.slice(0,7);
@@ -938,7 +1742,6 @@ footer {
             agg[key].energy += d.energy_kwh || 0;
             agg[key].emissions += d.emissions_kg || 0;
         });
-
         Object.keys(agg).sort((a,b) => b.localeCompare(a)).forEach(key => {
             const tr = document.createElement('tr');
             tr.innerHTML = `<td>${key}</td><td>${agg[key].energy.toFixed(2)}</td><td>${agg[key].emissions.toFixed(2)}</td>`;
@@ -950,7 +1753,6 @@ footer {
         const body = document.getElementById('transport-table-body');
         body.innerHTML = '';
         const agg = {};
-
         allTransport.forEach(t => {
             if (!t) return;
             const key = mode === 'daily' ? t.timestamp?.slice(0,10) : t.timestamp?.slice(0,7);
@@ -959,7 +1761,6 @@ footer {
             agg[key].dist += t.distance_km || 0;
             agg[key].co2 += t.carbon_emissions_kg || 0;
         });
-
         Object.keys(agg).sort((a,b) => b.localeCompare(a)).forEach(key => {
             const tr = document.createElement('tr');
             tr.innerHTML = `<td>${key}</td><td>${agg[key].dist.toFixed(2)}</td><td>${agg[key].co2.toFixed(2)}</td>`;
@@ -971,7 +1772,6 @@ footer {
         const body = document.getElementById('electricity-table-body');
         body.innerHTML = '';
         const agg = {};
-
         allElectricity.forEach(e => {
             if (!e || !e.date) return;
             const key = mode === 'daily' ? e.date : e.date.slice(0,7);
@@ -981,7 +1781,6 @@ footer {
             agg[key].bill += e.bill_amount || 0;
             agg[key].co2 += e.co2_emissions || 0;
         });
-
         Object.keys(agg).sort((a,b) => b.localeCompare(a)).forEach(key => {
             const tr = document.createElement('tr');
             tr.innerHTML = `<td>${key}</td><td>${agg[key].units.toFixed(2)}</td><td>₹${agg[key].bill.toFixed(2)}</td><td>${agg[key].co2.toFixed(2)}</td>`;
@@ -996,23 +1795,18 @@ footer {
         const ele = allData.reduce((s, d) => s + d.electricity, 0);
 
         const tips = [];
-        if (dev / total > 0.3) tips.push({ icon: 'Unplug', title: 'Cut Device Power', text: 'Unplug chargers & idle devices. Enable sleep mode.' });
-        if (trn / total > 0.3) tips.push({ icon: 'Bike', title: 'Go Green on Wheels', text: 'Walk, cycle, or use public transport for short trips.' });
-        if (ele / total > 0.3) tips.push({ icon: 'Light', title: 'Save Electricity', text: 'Switch to LEDs. Turn off lights when not in use.' });
-        if (tips.length === 0) tips.push({ icon: 'Leaf', title: 'Great Job!', text: 'You’re doing well. Keep tracking!' });
+        if (dev / total > 0.3) tips.push({ icon: '🔌', title: 'Cut Device Power', text: 'Unplug chargers & idle devices. Enable sleep mode to save energy.' });
+        if (trn / total > 0.3) tips.push({ icon: '🚲', title: 'Go Green on Wheels', text: 'Walk, cycle, or use public transport for short trips.' });
+        if (ele / total > 0.3) tips.push({ icon: '💡', title: 'Save Electricity', text: 'Switch to LEDs and turn off lights when not in use.' });
+        if (tips.length === 0) tips.push({ icon: '🌿', title: 'Great Job!', text: 'You\'re tracking well. Keep reducing your footprint!' });
 
-        const list = document.getElementById('tips-list');
-        list.innerHTML = '';
-        tips.forEach(t => {
-            list.innerHTML += `
-                <div class="tip-item">
-                    <div class="tip-icon">${t.icon}</div>
-                    <div class="tip-text"><h3>${t.title}</h3><p>${t.text}</p></div>
-                </div>`;
-        });
+        const box = document.getElementById('sideTipBox');
+        const pick = tips[0];
+        box.innerHTML = `
+            <div class="tip-mini-icon">${pick.icon}</div>
+            <div class="tip-mini-text"><h3>${pick.title}</h3><p>${pick.text}</p></div>`;
     }
 
-    // Download CSV
     document.getElementById('download-report').onclick = () => {
         let csv = 'Category,Period,Details,CO₂ (kg)\n';
         const add = (cat, rows) => {
@@ -1029,12 +1823,13 @@ footer {
         const blob = new Blob([csv], { type: 'text/csv' });
         const a = Object.assign(document.createElement('a'), {
             href: URL.createObjectURL(blob),
-            download: `carbotracker_${currentReportMode}.csv`
+            download: `ZeroTrace_${currentReportMode}.csv`
         });
         a.click();
         URL.revokeObjectURL(a.href);
     };
 
+    initHeroPie();
     window.addEventListener('load', loadAllData);
 </script>
 </body>

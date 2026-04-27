@@ -22,3 +22,5 @@
 [{"transport_mode": "car_diesel", "distance_km": 590.0, "carbon_emissions_kg": 99.12}]
 [{"transport_mode": "car_electric", "distance_km": 450.0, "carbon_emissions_kg": 47.25, "timestamp": "2025-11-05T15:53:38.387434Z"}]
 [{"transport_mode": "bus", "distance_km": 500.0, "carbon_emissions_kg": 41.0, "timestamp": "2025-11-05T16:08:36.453765Z"}]
+[{"transport_mode": "car_petrol", "distance_km": 100.0, "carbon_emissions_kg": 19.2, "timestamp": "2026-04-24T12:56:37.110670Z"}]
+[{"transport_mode": "car_diesel", "distance_km": 100.0, "carbon_emissions_kg": 17.1, "timestamp": "2026-04-24T12:56:41.305280Z"}]

@@ -1,6 +1,6 @@
-# CarboTracker
+# ZeroTrace
 
-CarboTracker is a web-based carbon footprint tracking application designed to help users monitor and reduce their travel and transport carbon emissions effortlessly.
+ZeroTrace is a web-based carbon footprint tracking application designed to help users monitor and reduce their travel and transport carbon emissions effortlessly.
 
 ## Features
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CarboTracker | Transportation Emissions Calculator</title>
+    <title>ZeroTrace | Transportation Emissions Calculator</title>
     <style>
         :root {
             --dark-green: #2D6A4F;
@@ -466,7 +466,7 @@
             <nav>
                 <div class="logo">
                     <span class="leaf-icon">🍃</span>
-                    <span>CarboTracker</span>
+                    <span>ZeroTrace</span>
                 </div>
                 <div class="nav-links">
                     <a href="/">Home</a>
@@ -493,16 +493,21 @@
                 <div class="upload-area">
                     <h2>Enter Travel Details</h2>
                     <div class="input-form">
-                        <label for="transport-mode">Transport Mode</label>
-                        <select id="transport-mode" required>
-                            <option value="" disabled selected>Select transport mode</option>
-                            <option value="car_petrol">Car (Petrol)</option>
-                            <option value="car_diesel">Car (Diesel)</option>
-                            <option value="car_electric">Car (Electric)</option>
+                        <label for="transport-type">Transport Type</label>
+                        <select id="transport-type" onchange="updateFuelOptions()" required>
+                            <option value="" disabled selected>Select transport type</option>
+                            <option value="car">Car</option>
                             <option value="bus">Bus</option>
                             <option value="train">Train</option>
                             <option value="plane">Plane</option>
+                        </select>
 
+                        <label for="fuel-type" id="fuel-label" style="display:none;">Fuel Type</label>
+                        <select id="fuel-type" style="display:none;" required>
+                            <option value="" disabled selected>Select fuel type</option>
+                            <option value="petrol">Petrol</option>
+                            <option value="diesel">Diesel</option>
+                            <option value="electric">Electric</option>
                         </select>
                         <label for="distance">Distance (km)</label>
                         <input type="number" id="distance" placeholder="Enter distance in kilometers" min="0" step="any" required>
@@ -573,7 +578,7 @@
             <div class="footer-about">
                 <div class="footer-logo">
                     <span class="leaf-icon">🍃</span>
-                    <span>CarboTracker</span>
+                    <span>ZeroTrace</span>
                 </div>
                 <p>Empowering individuals to understand and reduce their carbon footprint through advanced AI and deep learning technology.</p>
                 <div class="social-icons">
@@ -612,7 +617,7 @@
             </div>
         </div>
         <div class="copyright container">
-            <p>© 2025 CarboTracker. All rights reserved.</p>
+            <p>© 2025 ZeroTrace. All rights reserved.</p>
         </div>
     </footer>
 <script>
@@ -639,16 +644,44 @@
             .catch(() => console.error('Failed to load initial suggestions'));
     };
 
+    function updateFuelOptions() {
+        const transportType = document.getElementById('transport-type').value;
+        const fuelLabel = document.getElementById('fuel-label');
+        const fuelSelect = document.getElementById('fuel-type');
+        
+        if (transportType === 'car') {
+            fuelLabel.style.display = 'block';
+            fuelSelect.style.display = 'block';
+            fuelSelect.required = true;
+        } else {
+            fuelLabel.style.display = 'none';
+            fuelSelect.style.display = 'none';
+            fuelSelect.required = false;
+            fuelSelect.value = '';
+        }
+    }
+
     async function calculateEmissions() {
-        const mode = document.getElementById('transport-mode').value;
+        const transportType = document.getElementById('transport-type').value;
+        const fuelType = document.getElementById('fuel-type').value;
         const distanceInput = document.getElementById('distance').value;
         const distance = parseFloat(distanceInput);
         const processingIndicator = document.getElementById('processing-indicator');
         const resultsContent = document.getElementById('results-content');
 
+        // Build transport mode based on selection
+        let mode = transportType;
+        if (transportType === 'car' && fuelType) {
+            mode = 'car_' + fuelType;
+        }
+
         // Validate inputs
-        if (!mode) {
-            alert('Please select a transport mode.');
+        if (!transportType) {
+            alert('Please select a transport type.');
+            return;
+        }
+        if (transportType === 'car' && !fuelType) {
+            alert('Please select a fuel type.');
             return;
         }
         if (isNaN(distance) || distance <= 0) {
@@ -791,7 +824,10 @@
     }
 
     function clearForm() {
-        document.getElementById('transport-mode').value = '';
+        document.getElementById('transport-type').value = '';
+        document.getElementById('fuel-type').value = '';
+        document.getElementById('fuel-type').style.display = 'none';
+        document.getElementById('fuel-label').style.display = 'none';
         document.getElementById('distance').value = '';
         document.getElementById('processing-indicator').style.display = 'none';
         document.getElementById('results-content').style.display = 'block';
