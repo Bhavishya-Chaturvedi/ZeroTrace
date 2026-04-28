@@ -1174,21 +1174,32 @@
     function updateDashboardToday() {
         const todayData = allData.find(d => d.date === TODAY) || { device: 0, transport: 0, electricity: 0 };
 
-        document.getElementById('deviceStatus').textContent =
-            todayData.device > 0
-                ? `Total device usage today: ${todayData.device.toFixed(3)} kg CO₂.`
-                : 'No device data tracked yet.';
+        // Device: Show last recorded value
+        const deviceEntries = allDevice.filter(d => d && d.device === 'All Devices');
+        if (deviceEntries.length > 0) {
+            const latestDevice = deviceEntries.sort((a, b) => (b.timestamp || '').localeCompare(a.timestamp || ''))[0];
+            document.getElementById('deviceStatus').innerHTML =
+                `<strong>Latest Device:</strong> ${(latestDevice.emissions_kg || 0).toFixed(3)} kg CO₂<br>` +
+                `<span style="font-size:0.85rem; color:#555;">Energy: ${(latestDevice.energy_kwh || 0).toFixed(2)} kWh | Cost: ₹${(latestDevice.daily_cost || 0).toFixed(0)}</span>`;
+        } else {
+            document.getElementById('deviceStatus').textContent = 'No device data tracked yet.';
+        }
 
-        const todayTransport = allTransport.filter(t => t?.timestamp?.startsWith(TODAY));
-        if (todayTransport.length > 0) {
-            const latest = todayTransport.sort((a,b) => (b.timestamp || '').localeCompare(a.timestamp || ''))[0];
-            document.getElementById('activityStatus').innerHTML =
-                `<strong>Total Transport Today: ${todayData.transport.toFixed(2)} kg CO₂</strong><br>` +
-                `Latest: ${(latest.carbon_emissions_kg || 0).toFixed(2)} kg from <em>${(latest.transport_mode || 'Unknown').replace('_', ' ')}</em> (${latest.distance_km || 0} km)`;
+        // Transport: Show last recorded value
+        if (allTransport.length > 0) {
+            const latestTransport = allTransport
+                .filter(t => t && t.timestamp)
+                .sort((a, b) => (b.timestamp || '').localeCompare(a.timestamp || ''))[0];
+            if (latestTransport) {
+                document.getElementById('activityStatus').innerHTML =
+                    `<strong>Latest Transport:</strong> ${(latestTransport.carbon_emissions_kg || 0).toFixed(2)} kg CO₂<br>` +
+                    `<span style="font-size:0.85rem; color:#555;">${(latestTransport.transport_mode || 'Unknown').replace('_', ' ')} | ${(latestTransport.distance_km || 0).toFixed(1)} km</span>`;
+            }
         } else {
             document.getElementById('activityStatus').textContent = 'No activities logged yet.';
         }
 
+        // Electricity: Show last recorded value (already implemented)
         if (todayData.electricity > 0) {
             document.getElementById('electricityStatus').innerHTML =
                 `<strong>Latest Bill:</strong> ${todayData.electricity.toFixed(2)} kg CO₂`;
