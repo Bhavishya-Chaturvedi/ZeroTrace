@@ -126,3 +126,11 @@
 {"timestamp": "2026-04-28T10:00:52.004160Z", "device": "All Devices", "emissions_kg": 0.154, "energy_kwh": 0.325, "daily_cost": 3.25}
 {"timestamp": "2026-04-28T12:47:01.021982Z", "device": "Laptop", "emissions_kg": 0.154, "energy_kwh": 0.325, "wattage": 65.0, "hours": 5.0}
 {"timestamp": "2026-04-28T12:47:01.028046Z", "device": "All Devices", "emissions_kg": 0.154, "energy_kwh": 0.325, "daily_cost": 3.25}
+{"timestamp": "2026-04-29T08:00:38.068128Z", "device": "Air Conditioner", "emissions_kg": 37.92, "energy_kwh": 48.0, "wattage": 2000.0, "hours": 24.0}
+{"timestamp": "2026-04-29T08:00:38.068697Z", "device": "All Devices", "emissions_kg": 37.92, "energy_kwh": 48.0, "daily_cost": 480.0}
+{"timestamp": "2026-04-29T08:01:19.413557Z", "device": "Air Conditioner", "emissions_kg": 9500.0, "energy_kwh": 20000.0, "wattage": 2000.0, "hours": 10000.0}
+{"timestamp": "2026-04-29T08:01:19.413898Z", "device": "All Devices", "emissions_kg": 9500.0, "energy_kwh": 20000.0, "daily_cost": 200000.0}
+{"timestamp": "2026-04-30T07:53:40.570515Z", "device": "Monitor (24\")", "emissions_kg": 0.066, "energy_kwh": 0.084, "wattage": 30.0, "hours": 2.8}
+{"timestamp": "2026-04-30T07:53:40.571161Z", "device": "All Devices", "emissions_kg": 0.066, "energy_kwh": 0.084, "daily_cost": 0.84}
+{"timestamp": "2026-04-30T07:54:47.800023Z", "device": "Air Conditioner", "emissions_kg": 6.65, "energy_kwh": 14.0, "wattage": 2000.0, "hours": 7.0}
+{"timestamp": "2026-04-30T07:54:47.800723Z", "device": "All Devices", "emissions_kg": 6.65, "energy_kwh": 14.0, "daily_cost": 140.0}

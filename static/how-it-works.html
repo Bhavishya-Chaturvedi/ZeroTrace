@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZeroTrace - How It Works</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --dark-green: #2D6A4F;
+            --medium-green: #40916C;
+            --light-green: #95D5B2;
+            --very-light-green: #D8F3DC;
+            --cream: #FFF8E8;
+            --dark-cream: #F0E6D2;
+            --text-dark: #1B4332;
+            --text-light: #FFF8E8;
+            --accent: #74C69D;
+            --accent-warm: #F4A261;
+            --accent-hot: #E76F51;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--dark-green);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .leaf-icon {
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        .nav-links a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--light-green);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover:after {
+            width: 100%;
+        }
+
+        .btn-login {
+            background-color: var(--accent);
+            color: var(--dark-green);
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-login:hover {
+            background-color: var(--light-green);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
+        .page-header {
+            background: linear-gradient(135deg, var(--very-light-green), var(--light-green));
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            color: var(--dark-green);
+            margin-bottom: 1rem;
+        }
+
+        .page-header p {
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+        }
+
+        /* Steps Section */
+        .steps-section {
+            padding: 4rem 0;
+        }
+
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 2rem;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .step-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--dark-green), var(--medium-green));
+            color: var(--text-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .step-content h2 {
+            font-size: 1.5rem;
+            color: var(--dark-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .step-content p {
+            font-size: 1.1rem;
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .step-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Features Overview */
+        .features-overview {
+            background-color: var(--dark-cream);
+            padding: 4rem 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            color: var(--dark-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 2rem;
+            color: var(--dark-green);
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: #555;
+        }
+
+        .btn-cta {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--dark-green), var(--medium-green));
+            color: var(--text-light);
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(45, 106, 79, 0.4);
+        }
+
+        footer {
+            background-color: var(--dark-green);
+            color: var(--text-light);
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .footer-about p {
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .social-icons a:hover {
+            background-color: var(--accent);
+            color: var(--dark-green);
+            transform: translateY(-3px);
+        }
+
+        .footer-links h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.7rem;
+        }
+
+        .footer-links h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--accent);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: var(--text-light);
+            opacity: 0.8;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--accent);
+            padding-left: 5px;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 992px) {
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .step-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            .step-number {
+                margin: 0 auto;
+            }
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <nav>
+            <a href="index.html" class="logo"><span class="leaf-icon">🍃</span> ZeroTrace</a>
+            <div class="nav-links">
+                <a href="/features">Features</a>
+                <a href="/how-it-works">How It Works</a>
+                <a href="/dashboard">Dashboard</a>
+                <a href="#">About</a>
+            </div>
+            <a href="#" class="btn-login">Sign In</a>
+        </nav>
+    </div>
+</header>
+
+<!-- Hero Section -->
+<section class="page-header">
+    <div class="container">
+        <h1>How It Works</h1>
+        <p>ZeroTrace uses advanced AI and deep learning technology to help you understand and reduce your carbon footprint. Here's how our platform works:</p>
+    </div>
+</section>
+
+<!-- Steps Section -->
+<section class="steps-section">
+    <div class="container">
+        <div class="steps-container">
+            
+            <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <div class="step-icon">📱</div>
+                    <h2>Connect Your Data Sources</h2>
+                    <p>Start by connecting your device usage, transportation activities, and electricity bills to the platform. Our system automatically collects and analyzes data from multiple sources to build a comprehensive picture of your carbon footprint.</p>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <div class="step-icon">🤖</div>
+                    <h2>AI-Powered Analysis</h2>
+                    <p>Our advanced AI algorithms process your data using deep learning models to accurately calculate your carbon emissions. The system considers factors like device energy consumption, transportation modes, and electricity usage patterns.</p>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <div class="step-icon">📊</div>
+                    <h2>Visualize Your Impact</h2>
+                    <p>View your carbon footprint through interactive dashboards and charts. Track your emissions over time, see breakdowns by category, and understand your environmental impact with detailed analytics and visualizations.</p>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <div class="step-icon">💡</div>
+                    <h2>Receive Smart Recommendations</h2>
+                    <p>Get personalized tips and suggestions to reduce your carbon footprint. Our AI analyzes your habits and provides actionable recommendations tailored to your lifestyle, helping you make eco-friendly choices every day.</p>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                    <div class="step-icon">🌱</div>
+                    <h2>Track Your Progress</h2>
+                    <p>Monitor your improvement over time with historical data and trend analysis. See how small changes in your daily habits can lead to significant reductions in your carbon footprint and contribute to a greener planet.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Features Overview -->
+<section class="features-overview">
+    <div class="container">
+        <h2 style="text-align: center; font-size: 2rem; color: var(--dark-green);">Explore Our Features</h2>
+        <div class="features-grid">
+            <a href="/device" class="feature-card">
+                <div class="icon">💻</div>
+                <h3>Device Analyzer</h3>
+                <p>Analyze your device usage and estimate its carbon footprint</p>
+            </a>
+            <a href="/transport" class="feature-card">
+                <div class="icon">🚌</div>
+                <h3>Transport Calculator</h3>
+                <p>Calculate emissions from your daily commute and travel</p>
+            </a>
+            <a href="/electricity" class="feature-card">
+                <div class="icon">⚡</div>
+                <h3>Electricity Bill</h3>
+                <p>Scan your bill to track units, cost, and CO₂ emissions</p>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <h2>Ready to Start Your Green Journey?</h2>
+        <p>Join thousands of users who are actively reducing their carbon footprint with ZeroTrace.</p>
+        <a href="/electricity" class="btn-cta">Go to Dashboard</a>
+    </div>
+</section>
+
+<footer>
+    <div class="container footer-content">
+        <div class="footer-about">
+            <div class="footer-logo"><span class="leaf-icon">🍃</span><span>ZeroTrace</span></div>
+            <p>Empowering individuals to understand and reduce their carbon footprint through advanced AI and deep learning technology.</p>
+            <div class="social-icons">
+                <a href="#"><i class="fas fa-globe"></i></a>
+                <a href="#"><i class="fas fa-mobile-alt"></i></a>
+                <a href="#"><i class="fas fa-book"></i></a>
+                <a href="#"><i class="fas fa-camera"></i></a>
+            </div>
+        </div>
+        <div class="footer-links">
+            <h3>Features</h3>
+            <ul>
+                <li><a href="/device">Device Analyzer</a></li>
+                <li><a href="/transport">Transport Calculator</a></li>
+                <li><a href="/electricity">Electricity Bill</a></li>
+                <li><a href="how-it-works.html">How It Works</a></li>
+            </ul>
+        </div>
+        <div class="footer-links">
+            <h3>Company</h3>
+            <ul>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Our Mission</a></li>
+                <li><a href="#">Sustainability</a></li>
+                <li><a href="#">Partners</a></li>
+            </ul>
+        </div>
+        <div class="footer-links">
+            <h3>Support</h3>
+            <ul>
+                <li><a href="#">Help Center</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+                <li><a href="#">Contact Us</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="copyright container">
+        <p>© 2026 ZeroTrace. All rights reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>

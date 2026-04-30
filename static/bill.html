@@ -60,6 +60,122 @@
     font-size: 0.95rem;
     border-radius: 30px;
 }
+ footer {
+            background-color: var(--dark-green);
+            color: var(--text-light);
+            padding: 4rem 0 2rem;
+            width: 100%;
+            background: var(--dark-green);
+        }
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            grid-auto-flow: column;
+            gap: 2rem;
+            align-items: start;
+            justify-content: start;
+            width: 100%;
+        }
+        .footer-content > div {
+            min-width: 0;
+            box-sizing: border-box;
+            padding: 0 10px;
+        }
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .footer-about p {
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+        }
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+        .social-icons a:hover {
+            background-color: var(--accent);
+            color: var(--dark-green);
+            transform: translateY(-3px);
+        }
+        .footer-links h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.7rem;
+        }
+        .footer-links h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--accent);
+        }
+        .footer-links ul {
+            list-style: none;
+        }
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        .footer-links a {
+            color: var(--text-light);
+            opacity: 0.8;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--accent);
+            padding-left: 5px;
+        }
+        .copyright {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        @media (max-width: 992px) {
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+                gap: 3rem;
+            }
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .upload-container, .results-container {
+                padding: 1rem;
+            }
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                grid-auto-flow: row;
+            }
+            .footer-content > div {
+                padding: 0;
+            }
+        }
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
@@ -74,8 +190,9 @@
             <div class="logo"><span class="leaf-icon">🍃</span> ZeroTrace</div>
             <div class="nav-links">
                 <a href="/">Home</a>
-                <a href=""index.html#how-it-works">How It Works</a>
-                <a href=/dashboard>Dashboard</a>
+                <a href="/features">Features</a>
+                <a href="/how-it-works">How It Works</a>
+                <a href="/dashboard">Dashboard</a>
                 <a href="#">About</a>
             </div>
             <button class="btn-login">Sign In</button>
@@ -179,6 +296,53 @@
     </div>
 </section>
 
+<footer>
+        <div class="container footer-content">
+            <div class="footer-about">
+                <div class="footer-logo">
+                    <span class="leaf-icon">🍃</span>
+                    <span>ZeroTrace</span>
+                </div>
+                <p>Empowering individuals to understand and reduce their carbon footprint through advanced AI and deep learning technology.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fas fa-globe"></i></a>
+                    <a href="#"><i class="fas fa-mobile-alt"></i></a>
+                    <a href="#"><i class="fas fa-book"></i></a>
+                    <a href="#"><i class="fas fa-camera"></i></a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h3>Features</h3>
+                <ul>
+                    <li><a href="#">Receipt Scanner</a></li>
+                    <li><a href="#">Image Analysis</a></li>
+                    <li><a href="#">Smart Recommendations</a></li>
+                    <li><a href="#">Carbon Dashboard</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Our Mission</a></li>
+                    <li><a href="#">Sustainability</a></li>
+                    <li><a href="#">Partners</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h3>Support</h3>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright container">
+            <p>© 2025 ZeroTrace. All rights reserved.</p>
+        </div>
+    </footer>
 <script>
 const dropZone = document.getElementById('drop-zone'), fileInput = document.getElementById('file-input'),
       processing = document.getElementById('processing'), results = document.getElementById('results'),

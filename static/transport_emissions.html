@@ -470,10 +470,10 @@
                 </div>
                 <div class="nav-links">
                     <a href="/">Home</a>
-                    <a href="/#features">Features</a>
+                    <a href="/features">Features</a>
+                    <a href="/how-it-works">How It Works</a>
                     <a href="/dashboard">Dashboard</a>
-                    <a href="/#about">About</a>
-
+                    <a href="#">About</a>
                 </div>
                 <button class="btn-login">Sign In</button>
             </nav>
@@ -617,7 +617,7 @@
             </div>
         </div>
         <div class="copyright container">
-            <p>© 2025 ZeroTrace. All rights reserved.</p>
+            <p>© 2026 ZeroTrace. All rights reserved.</p>
         </div>
     </footer>
 <script>
@@ -932,7 +932,14 @@
                 // Historical data
                 const histX = data.map((_, i) => i + 1);
                 const histY = data.map(r => r.carbon_emissions_kg);
-                const histLabels = histX.map(i => `Trip ${i}`);
+                // Generate continuous date pattern starting from a base date
+                const baseDate = new Date();
+                baseDate.setDate(baseDate.getDate() - data.length);
+                const histLabels = data.map((_, i) => {
+                    const d = new Date(baseDate);
+                    d.setDate(d.getDate() + i);
+                    return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+                });
 
                 let datasets = [{
                     label: 'kg CO₂ (History)',
@@ -958,7 +965,13 @@
                         const futureY = futureX.map(x => Math.max(0, reg.intercept + reg.slope * x));
 
                         // Extend labels
-                        labels = [...histLabels, ...futureX.map(x => `Trip ${x} (Pred.)`)];
+                        const lastDate = new Date(records[records.length - 1].timestamp);
+                        const futureLabels = futureX.map((_, i) => {
+                            const d = new Date(lastDate);
+                            d.setDate(d.getDate() + (i + 1)); // Next day predictions
+                            return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) + ' (Pred.)';
+                        });
+                        labels = [...histLabels, ...futureLabels];
                         title += ' + 5-Trip Forecast';
 
                         // History: pad with nulls
@@ -1008,7 +1021,7 @@
                         },
                         scales: {
                             y: { beginAtZero: true, title: { display: true, text: 'kg CO₂' } },
-                            x: { title: { display: true, text: 'Trip' } }
+                            x: { title: { display: true, text: 'Date' } }
                         }
                     }
                 });

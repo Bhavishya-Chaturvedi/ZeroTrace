@@ -25,3 +25,6 @@
 [{"transport_mode": "car_petrol", "distance_km": 100.0, "carbon_emissions_kg": 19.2, "timestamp": "2026-04-24T12:56:37.110670Z"}]
 [{"transport_mode": "car_diesel", "distance_km": 100.0, "carbon_emissions_kg": 17.1, "timestamp": "2026-04-24T12:56:41.305280Z"}]
 [{"transport_mode": "car_petrol", "distance_km": 121.0, "carbon_emissions_kg": 23.23, "timestamp": "2026-04-28T08:46:25.849448Z"}]
+[{"transport_mode": "car_petrol", "distance_km": 99999.0, "carbon_emissions_kg": 19199.81, "timestamp": "2026-04-29T08:01:01.872374Z"}]
+[{"transport_mode": "car_petrol", "distance_km": 121.0, "carbon_emissions_kg": 23.23, "timestamp": "2026-04-30T07:50:13.983482Z"}]
+[{"transport_mode": "car_diesel", "distance_km": 50.0, "carbon_emissions_kg": 8.55, "timestamp": "2026-04-30T07:55:11.219306Z"}]

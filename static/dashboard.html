@@ -745,9 +745,9 @@
         <nav>
             <div class="logo"><span class="leaf-icon">🍃</span> ZeroTrace</div>
             <div class="nav-links">
-                <a href="#features">Features</a>
-                <a href="index.html#how-it-works">How It Works</a>
-                <a href="/electricity">Dashboard</a>
+                <a href="/features">Features</a>
+                <a href="/how-it-works">How It Works</a>
+                <a href="/dashboard">Dashboard</a>
                 <a href="#">About</a>
             </div>
             <button class="btn-login">Sign In</button>
@@ -983,12 +983,13 @@
         </div>
     </div>
     <div class="copyright container">
-        <p>© 2025 ZeroTrace. All rights reserved.</p>
+        <p>© 2026 ZeroTrace. All rights reserved.</p>
     </div>
 </footer>
 
 <script>
-    const TODAY = '2025-11-08';
+    // Get actual current date in YYYY-MM-DD format
+    const TODAY = new Date().toISOString().slice(0, 10);
     let allData = [];
     let allTransport = [];
     let allDevice = [];
@@ -1125,9 +1126,12 @@
             const deviceMap = {}, transportMap = {}, electricityMap = {};
 
             allDevice.forEach(d => {
-                if (!d || d.device === 'All Devices') return;
+                if (!d) return;
+                // Include "All Devices" entries which have the total emissions
                 const date = d.timestamp?.slice(0, 10);
-                if (date) deviceMap[date] = (deviceMap[date] || 0) + (d.emissions_kg || 0);
+                if (date && d.device === 'All Devices') {
+                    deviceMap[date] = (deviceMap[date] || 0) + (d.emissions_kg || 0);
+                }
             });
 
             allTransport.forEach(t => {
@@ -1162,8 +1166,34 @@
             updateReport('daily');
             generateTips();
 
-            // Update hero pie with today's breakdown
-            const todayData = allData.find(d => d.date === TODAY) || { device: 0, transport: 0, electricity: 0 };
+            // Update hero pie with today's breakdown or latest available data
+            let todayData = allData.find(d => d.date === TODAY);
+            
+            // If no today's data, get the latest available data from each category
+            if (!todayData || (todayData.device === 0 && todayData.transport === 0 && todayData.electricity === 0)) {
+                // Get latest device data
+                const deviceEntries = allDevice.filter(d => d && d.device === 'All Devices');
+                const latestDevice = deviceEntries.length > 0 
+                    ? deviceEntries.sort((a, b) => (b.timestamp || '').localeCompare(a.timestamp || ''))[0]
+                    : null;
+                
+                // Get latest transport data
+                const latestTransport = allTransport.length > 0
+                    ? allTransport.sort((a, b) => (b.timestamp || '').localeCompare(a.timestamp || ''))[0]
+                    : null;
+                
+                // Get latest electricity data
+                const latestElectricity = allElectricity.length > 0
+                    ? allElectricity.sort((a, b) => (b.date || '').localeCompare(a.date || ''))[0]
+                    : null;
+                
+                todayData = {
+                    device: latestDevice ? (latestDevice.emissions_kg || 0) : 0,
+                    transport: latestTransport ? (latestTransport.carbon_emissions_kg || 0) : 0,
+                    electricity: latestElectricity ? (latestElectricity.co2_emissions || 0) : 0
+                };
+            }
+            
             updateHeroPie(todayData.device, todayData.transport, todayData.electricity);
 
         } catch (err) {
